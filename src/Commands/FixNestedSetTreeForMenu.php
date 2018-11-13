@@ -3,7 +3,7 @@ namespace GreenBar\MenuBuilder\Commands;
 
 use Illuminate\Console\Command;
 
-class CreateMenuItemCommand extends Command
+class FixNestedSetTreeForMenu extends Command
 {
     /**
      * The environment this command is running in
@@ -17,14 +17,14 @@ class CreateMenuItemCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'menus:create-menu-item';
+    protected $signature = 'menus:fix-tree {menu_id}';
     
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Creates a menu item with GreenBar\\MenuBuilder';
+    protected $description = 'ReIndexes the nested set tree for the specified menu';
 
     /**
      * Should we enable debug messaging?
@@ -56,9 +56,27 @@ class CreateMenuItemCommand extends Command
      */
     public function handle()
     {
-        // TODO: 2018-11-13: Create the menu item relate the menu item to the specified menu,
-        //                   and the re-index all of the left_id and right_id columns on the
-        //                   menu's menu items.
+        $menu_class = config('menu_builder.models.menu');
+        $menu_item_class = config('menu_builder.models.menu_item');
+
+        $menu_id = (int) $this->argument('menu_id');
+
+        if (!$menu_id) {
+            return $this->error('Must enter a integer for a menu id');
+        }
+
+        $menu = $menu_class::find($menu_id);
+
+        if (!$menu) {
+            return $this->error('Could not find the the specified menu.');
+        }
+
+        try {
+            $menu_item_class::scoped([ 'menu_id' => $menu_id ])->fixTree(); 
+        } catch (Exception $e) {
+            return $this->error($e->getMessage());
+        }
+        
         return 0;
     }
 }

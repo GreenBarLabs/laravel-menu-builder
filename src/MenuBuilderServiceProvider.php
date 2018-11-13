@@ -1,6 +1,6 @@
 <?php
 
-namespace Greenbar\MenuBuilder;
+namespace GreenBar\MenuBuilder;
 
 use Illuminate\Routing\Route;
 use Illuminate\Support\ServiceProvider;
@@ -23,6 +23,7 @@ class MenuBuilderServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__.'/../database/migrations/create_menus_table.stub.php' => database_path("migrations/{$timestamp}_create_menus_table.php"),
             ], 'migrations');
+            sleep(1);
         }
 
         if (! class_exists('CreateMenuItemsTable')) {
@@ -36,6 +37,7 @@ class MenuBuilderServiceProvider extends ServiceProvider
             $this->commands([
                 Commands\CreateMenuCommand::class,
                 Commands\CreateMenuItemCommand::class,
+                Commands\FixNestedSetTreeForMenu::class,
             ]);
         }
     }

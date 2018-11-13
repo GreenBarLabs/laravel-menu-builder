@@ -6,8 +6,7 @@
     "prefer-stable": true,
     "require": {
         "php": ">=7.0",
-        "laravel/framework": "^5.7",
-        "laravel/nova": "*"
+        "kalnoy/nestedset": "^4.3"
     },
     "require-dev": {},
     "authors": [
@@ -26,15 +25,15 @@
     ],
     "autoload": {
         "psr-4": {
-            "Greenbar\\MenuBuilder\\": "src"
+            "GreenBar\\MenuBuilder\\": "src"
         },
         "files": [
-            "src/package_helpers.php"
+            "src/helpers.php"
         ]
     },
     "autoload-dev": {
         "psr-4": {
-            "Greenbar\\MenuBuilder\\Tests\\": "tests"
+            "GreenBar\\MenuBuilder\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -43,7 +42,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Greenbar\\MenuBuilder\\MenuBuilderServiceProvider"
+                "GreenBar\\MenuBuilder\\MenuBuilderServiceProvider"
             ]
         }
     },

@@ -1,14 +1,16 @@
 <?php
 
-namespace Greenbar\MenuBuilder\Models;
+namespace GreenBar\MenuBuilder\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Kalnoy\Nestedset\NodeTrait;
 
 class MenuItem extends Model
 {
     use SoftDeletes;
+    use NodeTrait; //https://github.com/lazychaser/laravel-nestedset
 
     /**
      * The attributes that are mass assignable.
@@ -46,6 +48,13 @@ class MenuItem extends Model
     ];
 
     /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [];
+
+    /**
      * The attributes that should be mutated to dates.
      *
      * @var array
@@ -57,6 +66,20 @@ class MenuItem extends Model
     /**
      * Attributes
     **/
+    protected function getScopeAttributes()
+    {
+        return [ 'menu_id' ];
+    }
+    
+    public function getLftName()
+    {
+        return 'lft';
+    }
+
+    public function getRgtName()
+    {
+        return 'rgt';
+    }
     
     /**
      * Methods

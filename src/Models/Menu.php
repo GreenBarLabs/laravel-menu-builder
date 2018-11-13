@@ -1,6 +1,6 @@
 <?php
 
-namespace Greenbar\MenuBuilder\Models;
+namespace GreenBar\MenuBuilder\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -18,6 +18,13 @@ class Menu extends Model
     protected $fillable = [
         'position',
     ];
+
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [];
 
     /**
      * The attributes that should be mutated to dates.
