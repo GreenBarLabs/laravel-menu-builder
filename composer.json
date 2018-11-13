@@ -7,7 +7,7 @@
     "require": {
         "php": ">=7.0",
         "laravel/framework": "^5.7",
-        "laravel/nova": "*",
+        "laravel/nova": "*"
     },
     "require-dev": {},
     "authors": [
@@ -22,7 +22,7 @@
         {
             "name": "David Sams",
             "email": "david@greenbar.co"
-        },
+        }
     ],
     "autoload": {
         "psr-4": {
@@ -49,5 +49,5 @@
     },
     "config": {
         "sort-packages": true
-    },
+    }
 }
