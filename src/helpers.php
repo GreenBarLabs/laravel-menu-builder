@@ -6,4 +6,4 @@ if (!function_exists('greenbar_placehoder_function')) {
     {
         echo 'Hello Greenbar!';
     }
-}
+}             
