@@ -17,11 +17,6 @@ class MenuBuilderServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->loadViewsFrom(__DIR__.'/resources/views/partials', 'menu_builder');
-        $this->publishes([
-            __DIR__.'/resources/views/partials' => resource_path('views/vendor/meubuilder'),
-        ]);
-
         $this->publishes([
             __DIR__.'/../config/menu_builder.php' => config_path('menu_builder.php'),
         ], 'config');
@@ -71,11 +66,11 @@ class MenuBuilderServiceProvider extends ServiceProvider
     {
         $this->app->afterResolving('blade.compiler', function (BladeCompiler $bladeCompiler) {
             $bladeCompiler->directive('render_menu', function ($arguments) {
-                list($menu_position, $extra_class) = explode(',', $arguments.',');
-                if (empty($extra_class)) {
-                    $extra_class = 'null';
+                list($menu_position, $classes) = explode(',', $arguments.',');
+                if (empty($classes)) {
+                    $classes = 'null';
                 }
-                return '<?php echo \GreenBar\MenuBuilder\Services\MenuBuilder::render_menu(' . $menu_position . ',' . $extra_class . '); ?>';
+                return '<?php echo \GreenBar\MenuBuilder\Services\MenuBuilder::render_menu(' . $menu_position . ',' . $classes . '); ?>';
             });
         });
     }
