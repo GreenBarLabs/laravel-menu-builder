@@ -6,13 +6,6 @@ use Illuminate\Console\Command;
 class CreateMenuItemCommand extends Command
 {
     /**
-     * The environment this command is running in
-     *
-     * @var boolean
-     */
-    private $app_env = 'production';
-
-    /**
      * The name and signature of the console command.
      *
      * @var string
@@ -41,12 +34,6 @@ class CreateMenuItemCommand extends Command
     public function __construct()
     {
         parent::__construct();
-
-        // TODO: DISCUSS 2018-11-13: Do this???
-        $this->app_env = strtolower(env('APP_ENV', 'production'));
-
-        // TODO: 2018-11-23: Change this to check config values instead of env values
-        $this->debug_messaging = ($this->app_env !== 'production') ? true : false;
     }
     
     /**

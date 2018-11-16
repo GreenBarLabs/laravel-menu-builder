@@ -6,13 +6,6 @@ use Illuminate\Console\Command;
 class FixNestedSetTreeForMenu extends Command
 {
     /**
-     * The environment this command is running in
-     *
-     * @var boolean
-     */
-    private $app_env = 'production';
-
-    /**
      * The name and signature of the console command.
      *
      * @var string
@@ -76,6 +69,8 @@ class FixNestedSetTreeForMenu extends Command
         } catch (Exception $e) {
             return $this->error($e->getMessage());
         }
+
+        $this->info('Done!');
         
         return 0;
     }
