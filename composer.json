@@ -1,0 +1,52 @@
+{
+    "name": "greenbar/laravel-menu-builder",
+    "description": "A menu builder for laravel and laravel nova",
+    "type": "laravel-package",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "php": ">=7.0",
+        "kalnoy/nestedset": "^4.3"
+    },
+    "require-dev": {},
+    "authors": [
+        {
+            "name": "Gregg Hilferding",
+            "email": "gregg@greenbar.co"
+        },
+        {
+            "name": "Joel Haker",
+            "email": "joel@greenbar.co"
+        },
+        {
+            "name": "David Sams",
+            "email": "david@greenbar.co"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "GreenBar\\MenuBuilder\\": "src"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "GreenBar\\MenuBuilder\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "phpunit"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "GreenBar\\MenuBuilder\\MenuBuilderServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
