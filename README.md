@@ -1,7 +1,7 @@
 # laravel-menu-builder
 
 ## **Warning!**
-This package is still in active development and is not ready for production deployment. However If you would like to use it in your project you may do so. Just know, we will probably not respond to any issues in the issue tracker.
+This package is still in active development and is not ready for production deployment. However, If you would like to use it in your project you may do so. Just know, we will probably not be responding to any issues in the issue tracker anytime soon.
 
 ## Installation
 Install the package via composer:
