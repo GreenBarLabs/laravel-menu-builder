@@ -1,9 +1,9 @@
 # laravel-menu-builder
 
-##**Warning!**
+## **Warning!**
 This package is still in active development and is not ready for production deployment. However If you would like to use it in your project you may do so. Just know, we will probably not respond to any issues in the issue tracker.
 
-##Installation
+## Installation
 Install the package via composer:
 ```
 composer require greenbar/laravel-menu-builder
@@ -55,26 +55,20 @@ return [
 ## Usage
 There are three commands to get you started:
 ```
-/**
- * Creates a menu with the specified position. You can also specify the number of first 
- * level menu items to stub out.
- */
+# Creates a menu with the specified position. You can also specify the number of first level menu items to stub out.
 php artisan menus:create-menu {position} {--menu-items=0}
 
-/**
- * TODO: Creates a nested menu item at the desired level and then re-indexes the whole tree
- */
+# TODO: Creates a nested menu item at the desired level and then re-indexes the whole tree
 php artisan menus:create-menu-item {menu_id} {parent_id?}
 
-/**
- * Re-indexes the menu's nested set tree
- */
+# Re-indexes the menu's nested set tree
 php artisan menus:fix-tree {menu_id}
 ```
 
 Once you have a menu, you can render the nav ul in the blade template by:
 ```php
-@render_menu('main') // you render the menu by it's unique position name
+// you render the menu by it's unique position name
+@render_menu('main') 
 ```
 
 ## License
