@@ -4,9 +4,9 @@ namespace GreenBar\MenuBuilder;
 
 use Illuminate\Routing\Route;
 use Illuminate\Support\ServiceProvider;
-
 use Illuminate\Support\Facades\Blade;
 use Illuminate\View\Compilers\BladeCompiler;
+use GreenBar\MenuBuilder\Nova\Http\Middleware\Authorize;
 
 class MenuBuilderServiceProvider extends ServiceProvider
 {
@@ -36,6 +36,23 @@ class MenuBuilderServiceProvider extends ServiceProvider
             ], 'migrations');
         }
 
+        if (class_exists('\\Laravel\\Nova\\Nova')) {
+            //$this->loadViewsFrom(__DIR__.'/../resources/views', 'nova-log-viewer');
+
+            \Laravel\Nova\Nova::serving(function (\Laravel\Nova\Events\ServingNova $event) {
+                \Laravel\Nova\Nova::script('menu-builder-tool', __DIR__.'/../dist/js/tool.js');
+                \Laravel\Nova\Nova::style('menu-builder-tool', __DIR__.'/../dist/css/tool.css');
+
+                // \Laravel\Nova\Nova::provideToScript([
+                //     'viewer' => config('log-viewer.colors.levels'),
+                // ]);
+            });
+
+            $this->app->booted(function () {
+                $this->novaRoutes();
+            });
+        }
+
         if ($this->app->runningInConsole()) {
             $this->commands([
                 Commands\CreateMenuCommand::class,
@@ -44,7 +61,7 @@ class MenuBuilderServiceProvider extends ServiceProvider
             ]);
         }
     }
-    
+
     /**
      * Register bindings in the container.
      *
@@ -57,6 +74,20 @@ class MenuBuilderServiceProvider extends ServiceProvider
         );
 
         $this->registerBladeExtensions();
+    }
+
+    /**
+     * Register the nova routes
+     */
+    protected function novaRoutes()
+    {
+        if ($this->app->routesAreCached()) {
+            return;
+        }
+        Route::middleware(['nova', 'api', Authorize::class])
+            ->prefix('nova-vendor/spatie/nova-tags-field')
+            ->group(__DIR__.'/../routes/Nova/api.php');
+
     }
 
     /**
