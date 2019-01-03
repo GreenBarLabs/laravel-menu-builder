@@ -18,7 +18,7 @@ Route::get('/dashboard', MenuBuilderController::class . '@index');
 
 // Menu Item Operations
 Route::get('/list-menu-items/{menu_id}', MenuBuilderController::class . '@list_menu_items');
-Route::get('/save-menu-order/{menu_id}', MenuBuilderController::class . '@save_menu_order');
+Route::post('/save-menu-order/{menu_id}', MenuBuilderController::class . '@save_menu_order');
 
 Route::get('/get-menu-item/{menu_item_id}', MenuBuilderController::class . '@get_menu_item');
 Route::post('/create-menu-item/{menu_id}', MenuBuilderController::class . '@create_menu_item');
