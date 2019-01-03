@@ -3,27 +3,29 @@
 namespace GreenBar\MenuBuilder\Nova;
 
 use Laravel\Nova\Nova;
-use Laravel\Nova\Tool as BaseTool;
+use Laravel\Nova\Events\ServingNova;
+#use Laravel\Nova\Tool as BaseTool;
+use Laravel\Nova\ResourceTool;
 
-class MenuBuilderTool extends BaseTool
+class MenuBuilderTool extends ResourceTool
 {
     /**
-     * Perform any tasks that need to happen when the tool is booted.
+     * Get the displayable name of the resource tool.
      *
-     * @return void
+     * @return string
      */
-    public function boot()
+    public function name()
     {
-
+        return 'Menu Items';
     }
 
     /**
-     * Build the view that renders the navigation links for the tool.
+     * Get the component name for the resource tool.
      *
-     * @return \Illuminate\View\View
+     * @return string
      */
-    public function renderNavigation()
+    public function component()
     {
-        //return view('nova-log-viewer::navigation');
+        return 'menu-item-tree';
     }
 }

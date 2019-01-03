@@ -1,5 +1,4 @@
 <?php
-
 namespace GreenBar\MenuBuilder\Commands;
 
 use Illuminate\Console\Command;
@@ -11,7 +10,7 @@ class CreateMenuItemCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'menus:create-menu-item {menu_id}';
+    protected $signature = 'menus:create-menu-item';
     
     /**
      * The console command description.

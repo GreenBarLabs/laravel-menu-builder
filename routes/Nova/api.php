@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use GreenBar\MenuBuilder\Nova\Http\Controllers\MenuBuilderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,10 +13,14 @@ use Illuminate\Support\Facades\Route;
 | by your tool's "Authorize" middleware by default. Now, go build!
 |
 */
-Route::group(['namespace' => 'PhpJunior\NovaLogViewer\Http\Controllers'], function () {
-    Route::get('get_chart_data','NovaLogViewerController@getChartData');
-    Route::get('get_list_logs','NovaLogViewerController@getListLogs');
-    Route::get('download/{date}','NovaLogViewerController@download');
-    Route::get('get/{date}/{level}','NovaLogViewerController@showByLevel');
-    Route::delete('delete','NovaLogViewerController@delete');
-});
+
+Route::get('/dashboard', MenuBuilderController::class . '@index');
+
+// Menu Item Operations
+Route::get('/list-menu-items/{menu_id}', MenuBuilderController::class . '@list_menu_items');
+Route::get('/save-menu-order/{menu_id}', MenuBuilderController::class . '@save_menu_order');
+
+Route::get('/get-menu-item/{menu_item_id}', MenuBuilderController::class . '@get_menu_item');
+Route::post('/create-menu-item/{menu_id}', MenuBuilderController::class . '@create_menu_item');
+Route::post('/update-menu-item/{menu_item_id}',  MenuBuilderController::class . '@update_menu_item');
+Route::post('/delete-menu-item/{menu_item_id}',  MenuBuilderController::class . '@delete_menu_item');
