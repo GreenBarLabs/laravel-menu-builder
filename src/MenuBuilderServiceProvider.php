@@ -2,9 +2,8 @@
 
 namespace GreenBar\MenuBuilder;
 
-use Illuminate\Routing\Route;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
-
 use Illuminate\Support\Facades\Blade;
 use Illuminate\View\Compilers\BladeCompiler;
 
@@ -21,7 +20,7 @@ class MenuBuilderServiceProvider extends ServiceProvider
             __DIR__.'/../config/menu_builder.php' => config_path('menu_builder.php'),
         ], 'config');
 
-        if (! class_exists('CreateMenusTable')) {
+        if (!class_exists('CreateMenusTable')) {
             $timestamp = date('Y_m_d_His', time());
             $this->publishes([
                 __DIR__.'/../database/migrations/create_menus_table.stub.php' => database_path("migrations/{$timestamp}_create_menus_table.php"),
@@ -29,7 +28,7 @@ class MenuBuilderServiceProvider extends ServiceProvider
             sleep(1);
         }
 
-        if (! class_exists('CreateMenuItemsTable')) {
+        if (!class_exists('CreateMenuItemsTable')) {
             $timestamp = date('Y_m_d_His', time());
             $this->publishes([
                 __DIR__.'/../database/migrations/create_menu_items_table.stub.php' => database_path("migrations/{$timestamp}_create_menu_items_table.php"),
@@ -44,7 +43,7 @@ class MenuBuilderServiceProvider extends ServiceProvider
             ]);
         }
     }
-    
+
     /**
      * Register bindings in the container.
      *
@@ -61,6 +60,8 @@ class MenuBuilderServiceProvider extends ServiceProvider
 
     /**
      * The package's blade extensions
+     *
+     * @return void
      */
     protected function registerBladeExtensions()
     {

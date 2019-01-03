@@ -1,5 +1,4 @@
 <?php
-
 namespace GreenBar\MenuBuilder\Commands;
 
 use Illuminate\Console\Command;
