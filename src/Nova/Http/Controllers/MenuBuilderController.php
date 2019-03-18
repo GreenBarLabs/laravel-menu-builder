@@ -180,11 +180,8 @@ class MenuBuilderController extends BaseController
             'name.required_unless' => 'A name is required unless the menu item is a divider.',
         ]);
 
-        // Doing this because it screwed up my text editor's syntax highlighting. -Joel Haker
         $menu_class = $this->menu_class;
         $menu_item_class = $this->menu_item_class;
-
-        //pr($request->input('menu_id'),1);
         $menu = $menu_class::find((int) $request->input('menu_id'));
 
         if (!$menu) {
@@ -244,7 +241,6 @@ class MenuBuilderController extends BaseController
             'name.required_unless' => 'A name is required unless the menu item is a divider.',
         ]);
 
-        // Doing this because it fixed my text editors syntax highlighting from being screwed up. -Joel
         $menu_item_class = $this->menu_item_class;
         $menu_item = $menu_item_class::find($menu_item_id);
 
@@ -284,7 +280,6 @@ class MenuBuilderController extends BaseController
 
     public function delete_menu_item(Request $request, $menu_id, $menu_item_id)
     {
-        // Doing this because it screwed up my text editor's syntax highlighting. -Joel Haker
         $menu_item_class = $this->menu_item_class;
         $menu_item = $menu_item_class::find($menu_item_id);
 
