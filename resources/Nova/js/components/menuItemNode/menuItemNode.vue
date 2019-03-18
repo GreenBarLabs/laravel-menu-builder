@@ -60,7 +60,7 @@
 
 <script>
     import api from 'mb_api';
-    import { makeRandomKey, sortMenuItems } from 'mb_helpers';
+    import { makeRandomKey } from 'mb_helpers';
 
     import draggable from 'vuedraggable'; // https://github.com/SortableJS/Vue.Draggable
     import { editButton } from '../editButton';
@@ -119,7 +119,6 @@
 
         methods: {
             makeRandomKey,
-            sortMenuItems,
 
             openDeleteModal(menu_item_id) {
                 this.deleteMenuItemId = menu_item_id;

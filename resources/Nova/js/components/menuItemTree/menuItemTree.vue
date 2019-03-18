@@ -40,7 +40,7 @@
 
 <script>
     import api from 'mb_api';
-    import { makeRandomKey, sortMenuItems } from 'mb_helpers';
+    import { makeRandomKey } from 'mb_helpers';
     import { menuItemNode } from '../menuItemNode';
     import { createButton } from '../createButton';
     import { saveSortButton } from '../saveSortButton';
@@ -111,15 +111,16 @@
 
         methods: {
             makeRandomKey,
-            sortMenuItems,
 
             saveMenuItemOrder() {
                 return api.saveMenuItemOrder(this.resourceId, {
                     sort_order: JSON.stringify(this.menuItems),
                 }).then((menu_items) => {
                     this.menuItems = menu_items;
+                    this.$toasted.show(this.__('The menu order was successfully saved.'), { type: 'success' });
                 }).catch((error) => {
                     console.error(error);
+                    this.$toasted.show(this.__('There was a problem in saving the menu item order.'), { type: 'error' });
                 });
             },
 
