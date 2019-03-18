@@ -45,6 +45,13 @@
         padding: 0 !important;
     }
 
+    .dragArea {
+        min-height: 1px;
+        //outline: 1px dashed #ddd;
+        padding-top: 4.5px;
+        padding-bottom: 4.5px;
+    }
+
     // .btn {
     //     display: inline-block;
     //     text-decoration: none;
