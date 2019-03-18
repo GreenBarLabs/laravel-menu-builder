@@ -2,7 +2,6 @@
 
 namespace GreenBar\MenuBuilder\Nova\Http\Controllers;
 
-
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 
@@ -62,14 +61,42 @@ class MenuBuilderController extends BaseController
      */
     public function list_menu_items(Request $request, $menu_id)
     {
-        $menu_items = $this->menu_item_class::scoped([ 'menu_id' => $menu_id ])->withDepth()->get()->toTree();
-        $menu_items = $menu_items->first()->children;
+        $menu_items = $this->menu_item_class::scoped([ 'menu_id' => $menu_id ])->withDepth()->defaultOrder()->get()->toTree();
+        $menu_items = $menu_items->first()->children->toArray();
+
+        if (count($menu_items) == 0) {
+            return response()->json([
+                'status' => 'error',
+                'messages' => [
+                    'Menu items not found.'
+                ],
+                'data' => [],
+            ], 404);
+        }
 
         return response()->json([
             'status' => 'success',
             'messages' => [],
             'data' => $menu_items,
         ], 200);
+    }
+
+    private function build_menu_order(array &$new_sort_array, array $sort_array, int $menu_id, $parent_menu_item_id = null) {
+        for ($i = 0; $i < count($sort_array); $i++) {
+            $new_sort_array[$i] = [
+                'id' => $sort_array[$i]['id'],
+                'menu_id' => $menu_id,
+                'parent_id' => $parent_menu_item_id,
+                'name' => $sort_array[$i]['name'],
+                'lft' => null,
+                'rgt' => null,
+                'children' => [],
+            ];
+
+            if (!empty($sort_array[$i]['children'])) {
+                $this->build_menu_order($new_sort_array[$i]['children'], $sort_array[$i]['children'], $menu_id, $sort_array[$i]['id']);
+            }
+        }
     }
 
     /**
@@ -81,11 +108,44 @@ class MenuBuilderController extends BaseController
      */
     public function save_menu_order(Request $request, $menu_id)
     {
-        return response()->json([
-            'status' => 'success',
-            'messages' => [],
-            'data' => [],
-        ], 200);
+        if (!$request->filled('sort_order')) {
+            return response()->json([
+                'status' => 'success',
+                'messages' => [
+                    'A Sort Order is required.'
+                ],
+                'data' => [],
+            ], 422);
+        }
+
+        $sort_order = json_decode($request->input('sort_order'),1);
+
+        if (!$sort_order || !is_array($sort_order)) {
+            return response()->json([
+                'status' => 'success',
+                'messages' => [
+                   'A Sort Order is required.'
+                ],
+                'data' => [],
+            ], 422);
+        }
+
+        $root_node = $this->menu_item_class::scoped([ 'menu_id' => $menu_id ])->withDepth()->get()->toTree();
+        $root_node = $root_node->first();
+        $new_sort_order = [];
+        $new_sort_order[] = [
+            'id' => $root_node->id,
+            'parent_id' => $root_node->parent_id,
+            'name' => $root_node->name,
+            'lft' => null,
+            'rgt' => null,
+            'children' => [],
+        ];
+
+        $this->build_menu_order($new_sort_order[0]['children'], $sort_order, $menu_id, $new_sort_order[0]['id']);
+        $this->menu_item_class::rebuildTree($new_sort_order);
+
+        return $this->list_menu_items($request, $menu_id);
     }
 
     public function get_menu_item(Request $request, $menu_item_id)
@@ -96,10 +156,10 @@ class MenuBuilderController extends BaseController
             return response()->json([
                 'status' => 'error',
                 'messages' => [
-                    'Menu Item does not exist.',
+                    'Menu Item not found.',
                 ],
                 'data' => [],
-            ], 200);
+            ], 404);
         }
 
         return response()->json([
@@ -109,9 +169,10 @@ class MenuBuilderController extends BaseController
         ], 200);
     }
 
-    public function create_menu_item(Request $request, $menu_id)
+    public function store_menu_item(Request $request, $menu_id)
     {
         $request->validate([
+            'menu_id' => 'required',
             'name' => 'required_unless:is_divider,1',
             'is_divider' => 'boolean',
             'url' => 'present',
@@ -123,7 +184,9 @@ class MenuBuilderController extends BaseController
         $menu_class = $this->menu_class;
         $menu_item_class = $this->menu_item_class;
 
-        $menu = $menu_class::where('menu_id', $menu_id)->first();
+        //pr($request->input('menu_id'),1);
+        $menu = $menu_class::find((int) $request->input('menu_id'));
+
         if (!$menu) {
             return response()->json([
                 'status' => 'error',
@@ -131,31 +194,35 @@ class MenuBuilderController extends BaseController
                     'Menu not found.',
                 ],
                 'data' => [],
-            ], 422);
+            ], 404);
         }
 
-        $menu_item = $menu_item_class::where('menu_id', $menu_id)->whereNull('parent_id')->first();
-        if (!$menu_item) {
+        $parent_menu_item = $menu_item_class::where('menu_id', $menu->id)->whereNull('parent_id')->first();
+
+        if (!$parent_menu_item) {
             return response()->json([
                 'status' => 'error',
                 'messages' => [
                     'Parent menu item not found.',
                 ],
                 'data' => [],
-            ], 422);
+            ], 404);
         }
 
         $menu_item_name = $request->input('name');
+        $menu_item_url = ($request->filled('url')) ? $request->input('url') : null;
+
         if ((int)$request->input('is_divider')) {
             $menu_item_name = '---';
+            $menu_item_url = null;
         }
 
-        $parent_menu_item::create([
+        $new_menu_item = $menu_item_class::create([
             'menu_id' => $menu->id,
-            'parent_id' => $menu_item->id,
+            'parent_id' => $parent_menu_item->id,
             'name' => $menu_item_name,
             'is_divider' => (int)$request->input('is_divider'),
-            'url' => ($request->filled('url')) ? $request->input('url') : null,
+            'url' => $menu_item_url,
         ]);
 
         $menu_item_class::scoped([ 'menu_id' => $menu->id ])->fixTree();
@@ -163,11 +230,11 @@ class MenuBuilderController extends BaseController
         return response()->json([
             'status' => 'success',
             'messages' => [],
-            'data' => [],
+            'data' => $new_menu_item->toArray(),
         ], 200);
     }
 
-    public function update_menu_item(Request $request, $menu_item_id)
+    public function update_menu_item(Request $request, $menu_id, $menu_item_id)
     {
         $request->validate([
             'name' => 'required_unless:is_divider,1',
@@ -177,10 +244,10 @@ class MenuBuilderController extends BaseController
             'name.required_unless' => 'A name is required unless the menu item is a divider.',
         ]);
 
-        // Doing this because it screwed up my text editor's syntax highlighting. -Joel Haker
+        // Doing this because it fixed my text editors syntax highlighting from being screwed up. -Joel
         $menu_item_class = $this->menu_item_class;
-
         $menu_item = $menu_item_class::find($menu_item_id);
+
         if (!$menu_item) {
             return response()->json([
                 'status' => 'error',
@@ -188,20 +255,21 @@ class MenuBuilderController extends BaseController
                     'Menu item not found.',
                 ],
                 'data' => [],
-            ], 422);
+            ], 404);
         }
 
         $menu_item_name = $request->input('name');
-        $url = ($request->filled('url')) ? $request->input('url') : null;
+        $menu_item_url = ($request->filled('url')) ? $request->input('url') : null;
+
         if ((int)$request->input('is_divider')) {
             $menu_item_name = '---';
-            $url = null;
+            $menu_item_url = null;
         }
 
         $menu_item->fill([
             'name' => $menu_item_name,
             'is_divider' => (int)$request->input('is_divider'),
-            'url' => $url,
+            'url' => $menu_item_url,
         ]);
         $menu_item->save();
 
@@ -214,31 +282,27 @@ class MenuBuilderController extends BaseController
         ], 200);
     }
 
-    public function delete_menu_item(Request $request, $menu_item_id)
+    public function delete_menu_item(Request $request, $menu_id, $menu_item_id)
     {
-        $request->validate([
-            'menu_item_id' => 'required|exists:menu_items,id',
-        ]);
-
-        if ($menu_item_id != $request->input('menu_item_id')) {
-            return response()->json([
-                'status' => 'error',
-                'messages' => [
-                    'Menu item not found.',
-                ],
-                'data' => [],
-            ], 422);
-        }
-
         // Doing this because it screwed up my text editor's syntax highlighting. -Joel Haker
         $menu_item_class = $this->menu_item_class;
-        $menu_item = $menu_item_class::find($request->input('menu_item_id'));
+        $menu_item = $menu_item_class::find($menu_item_id);
 
         if (!$menu_item) {
             return response()->json([
                 'status' => 'error',
                 'messages' => [
                     'Menu item not found.',
+                ],
+                'data' => [],
+            ], 404);
+        }
+
+        if ($menu_item->menu_id != $menu_id) {
+            return response()->json([
+                'status' => 'error',
+                'messages' => [
+                    'Can not delete menu item.',
                 ],
                 'data' => [],
             ], 422);

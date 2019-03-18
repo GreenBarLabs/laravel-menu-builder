@@ -17,10 +17,10 @@ use GreenBar\MenuBuilder\Nova\Http\Controllers\MenuBuilderController;
 Route::get('/dashboard', MenuBuilderController::class . '@index');
 
 // Menu Item Operations
-Route::get('/list-menu-items/{menu_id}', MenuBuilderController::class . '@list_menu_items');
-Route::post('/save-menu-order/{menu_id}', MenuBuilderController::class . '@save_menu_order');
+Route::get('/menus/{menu_id}/menu-items', MenuBuilderController::class . '@list_menu_items');
+Route::post('/menus/{menu_id}/save-menu-order', MenuBuilderController::class . '@save_menu_order');
 
-Route::get('/get-menu-item/{menu_item_id}', MenuBuilderController::class . '@get_menu_item');
-Route::post('/create-menu-item/{menu_id}', MenuBuilderController::class . '@create_menu_item');
-Route::post('/update-menu-item/{menu_item_id}',  MenuBuilderController::class . '@update_menu_item');
-Route::post('/delete-menu-item/{menu_item_id}',  MenuBuilderController::class . '@delete_menu_item');
+Route::post('/menus/{menu_id}/menu-items', MenuBuilderController::class . '@store_menu_item');
+Route::get('/menus/{menu_id}/menu-items/{menu_item_id}', MenuBuilderController::class . '@get_menu_item');
+Route::put('/menus/{menu_id}/menu-items/{menu_item_id}', MenuBuilderController::class . '@update_menu_item');
+Route::delete('/menus/{menu_id}/menu-items/{menu_item_id}', MenuBuilderController::class . '@delete_menu_item');

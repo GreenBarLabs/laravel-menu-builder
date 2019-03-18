@@ -1,6 +1,6 @@
 import { menuItemTree } from './components/menuItemTree';
 //import { menuItemNode } from './components/menuItemNode';
-import { menuItem } from './components/menuItem';
+import { editMenuItemForm } from './components/editMenuItemForm';
 
 Nova.booting((Vue, router) => {
     // Enable devtools
@@ -8,13 +8,22 @@ Nova.booting((Vue, router) => {
 
     router.addRoutes([
         {
-            name: 'laravel-menu-builder-menu-item',
-            path: '/menu-builder/edit-menu-item/:menu_item_id',
-            component: menuItem,
-            props: true,
+            name: 'laravel-menu-builder-menu-item-create',
+            path: '/menu-builder/menus/:menuId/menu-items/create',
+            component: editMenuItemForm,
+            props: (route) => {
+                return { action: 'create', ...route.params }
+            },
+        },
+        {
+            name: 'laravel-menu-builder-menu-item-update',
+            path: '/menu-builder/menus/:menuId/menu-items/:menuItemId/edit',
+            component: editMenuItemForm,
+            props: (route) => {
+                return { action: 'update', ...route.params }
+            },
         },
     ]);
 
     Vue.component('menu-item-tree', menuItemTree);
-    //Vue.component('menu-item-node', menuItemNode);
 })

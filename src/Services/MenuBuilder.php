@@ -8,15 +8,15 @@ class MenuBuilder
     {
         $menu_class = config('menu_builder.models.menu');
         $menu_item_class = config('menu_builder.models.menu_item');
-        
+
         $menu = $menu_class::where('position', $menu_position)->first();
-        $menu_items = $menu_item_class::scoped([ 'menu_id' => $menu->id ])->withDepth()->get()->toTree();
+        $menu_items = $menu_item_class::scoped([ 'menu_id' => $menu->id ])->withDepth()->defaultOrder()->get()->toTree();
         $menu_items = $menu_items->first()->children;
 
         return self::build_nav_ul($menu_items, $classes);
     }
 
-    protected static function build_nav_ul($menu_items, $ul_classes = null, $dropdown_menu = false) 
+    protected static function build_nav_ul($menu_items, $ul_classes = null, $dropdown_menu = false)
     {
         if (count($menu_items) == 0) {
             return '';
@@ -31,7 +31,7 @@ class MenuBuilder
                 $result = '<ul>' . PHP_EOL;
             }
         }
-        
+
         foreach($menu_items as $menu_item) {
             if ($dropdown_menu) {
                 if ($menu_item->is_divider) {
@@ -44,12 +44,12 @@ class MenuBuilder
                 if (count($menu_item->children) > 0) {
                     $li_classes .= ' dropdown';
                 }
-                
+
                 $result .= '<li class="'. $li_classes .'">';
-                
+
                 $result .= self::build_nav_link($menu_item, 'nav-link');
                 $result .= self::build_nav_ul($menu_item->children, null, $sub_menu = true);
-                
+
                 $result .= '</li>' . PHP_EOL;
             }
         }
@@ -59,11 +59,11 @@ class MenuBuilder
         } else {
             $result .= '</ul>' . PHP_EOL;
         }
-        
+
         return $result;
     }
 
-    protected static function build_nav_link($menu_item, $classes = '') 
+    protected static function build_nav_link($menu_item, $classes = '')
     {
         $link = '<a class="'. $classes .'"';
 

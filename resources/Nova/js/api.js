@@ -10,33 +10,38 @@ export default {
 
     listMenuItems(menu_id) {
         return window.axios
-            .get('/nova-vendor/greenbar/laravel-menu-builder/list-menu-items/' + menu_id)
+            .get('/nova-vendor/greenbar/laravel-menu-builder/menus/'+ menu_id +'/menu-items')
             .then(response => response.data.data);
     },
 
-    getMenuItem(menu_item_id) {
+    saveMenuItemOrder(menu_id, params) {
         return window.axios
-            .get('/nova-vendor/greenbar/laravel-menu-builder/get-menu-item/' + menu_item_id)
+            .post('/nova-vendor/greenbar/laravel-menu-builder/menus/'+ menu_id +'/save-menu-order', params)
             .then(response => response.data.data);
     },
 
-    createMenuItem(params) {
+    getMenuItem(menu_id, menu_item_id) {
         return window.axios
-            .post('/nova-vendor/greenbar/laravel-menu-builder/create-menu-item', params)
+            .get('/nova-vendor/greenbar/laravel-menu-builder/menus/'+ menu_id +'/menu-items/'+ menu_item_id)
             .then(response => response.data.data);
     },
 
-    updateMenuItem(menu_item_id, params) {
+    createMenuItem(menu_id, params) {
         return window.axios
-            .post('/nova-vendor/greenbar/laravel-menu-builder/update-menu-item/' + menu_item_id, params)
+            .post('/nova-vendor/greenbar/laravel-menu-builder/menus/'+ menu_id +'/menu-items', params)
+            .then(response => response.data.data);
+    },
+
+    updateMenuItem(menu_id, menu_item_id, params) {
+        return window.axios
+            .put('/nova-vendor/greenbar/laravel-menu-builder/menus/'+ menu_id +'/menu-items/'+ menu_item_id, params)
+            .then(response => response.data.data);
+    },
+
+    deleteMenuItem(menu_id, menu_item_id) {
+        return window.axios
+            .delete('/nova-vendor/greenbar/laravel-menu-builder/menus/'+ menu_id +'/menu-items/'+ menu_item_id)
             .then(response => response.data);
-    },
-
-    deleteMenuItem(menu_item_id) {
-        return window.axios
-            .post('/nova-vendor/greenbar/laravel-menu-builder/delete-menu-item/' + menu_item_id, {
-                'menu_item_id': menu_item_id,
-            }).then(response => response.data);
     },
 };
 
